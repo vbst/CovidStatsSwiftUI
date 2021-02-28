@@ -178,12 +178,59 @@ struct Home: View {
             .padding(.bottom, 45)
             .background(Color(.systemIndigo))
             
-            Spacer()
             
+    
+            VStack(spacing: 15) {
+                
+                HStack {
+                    
+                    Text("Последняя неделя")
+                        .font(.title)
+                        .foregroundColor(.black)
+                    
+                    Spacer()
+                }
+                .padding(.top)
+                                
+                
+                
+                HStack {
+                    
+                    ForEach(0...6, id: \.self){_ in
+                        
+                        VStack(spacing: 10) {
+                            
+                            Text("555K")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                            
+                            GeometryReader{g in
+                                
+                                VStack{
+                                    
+                                    Spacer(minLength: 0)
+                                    
+                                    Rectangle()
+                                        .fill(Color(.systemPink))
+                                        .frame(width: 15)
+                                }
+                            }
+                            .offset(x: 20)
+                            
+                            Text("28/2/21")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                        }
+                    }
+                }
+            }
+            .padding(.horizontal)
+            .background(Color.white)
+            .cornerRadius(20)
+            .padding(.bottom, -30)
+            .offset(y: -30)
         }
         
         .edgesIgnoringSafeArea(.top)
-        
     }
-    
 }
