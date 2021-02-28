@@ -84,6 +84,42 @@ struct Home: View {
                 .clipShape(Capsule())
                 .padding(.top, 10)
                 
+                HStack(spacing: 15){
+                    
+                    VStack(spacing: 12){
+                        
+                        Text("Случаев")
+                        
+                        Text("555,555")
+                            .fontWeight(.bold)
+                        
+                    }
+                    .padding(.vertical)
+                    .frame(width: (UIScreen.main.bounds.width / 2) - 30)
+                    .background(Color(.systemOrange))
+                    .cornerRadius(12)
+                    
+                    
+                    
+                    VStack(spacing: 12){
+                        
+                        Text("Смертей")
+                        
+                        Text("55,555")
+                            .fontWeight(.bold)
+                        
+                    }
+                    .padding(.vertical)
+                    .frame(width: (UIScreen.main.bounds.width / 2) - 30)
+                    .background(Color(.systemRed))
+                    .cornerRadius(12)
+                    
+                }
+                .foregroundColor(.white)
+                .padding(.top, 10)
+                
+                
+                
             }
             .padding(.horizontal)
             .padding(.bottom, 45)
