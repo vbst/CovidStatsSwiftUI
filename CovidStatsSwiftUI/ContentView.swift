@@ -89,9 +89,11 @@ struct Home: View {
                     VStack(spacing: 12){
                         
                         Text("Случаев")
+                            .fontWeight(.bold)
                         
                         Text("555,555")
                             .fontWeight(.bold)
+                            .font(.title)
                         
                     }
                     .padding(.vertical)
@@ -104,9 +106,11 @@ struct Home: View {
                     VStack(spacing: 12){
                         
                         Text("Смертей")
-                        
-                        Text("55,555")
                             .fontWeight(.bold)
+                        
+                        Text("5,555")
+                            .fontWeight(.bold)
+                            .font(.title)
                         
                     }
                     .padding(.vertical)
@@ -118,7 +122,56 @@ struct Home: View {
                 .foregroundColor(.white)
                 .padding(.top, 10)
                 
-                
+                HStack(spacing: 15){
+                    
+                    VStack(spacing: 12){
+                        
+                        Text("Здоровы")
+                            .fontWeight(.bold)
+                        
+                        Text("355,555")
+                            .fontWeight(.bold)
+                        
+                    }
+                    .padding(.vertical)
+                    .frame(width: (UIScreen.main.bounds.width / 3) - 30)
+                    .background(Color(.systemGreen))
+                    .cornerRadius(12)
+                    
+                    
+                    
+                    VStack(spacing: 12){
+                        
+                        Text("Болеют")
+                            .fontWeight(.bold)
+                        
+                        Text("55,555")
+                            .fontWeight(.bold)
+                        
+                    }
+                    .padding(.vertical)
+                    .frame(width: (UIScreen.main.bounds.width / 3) - 30)
+                    .background(Color(.systemBlue))
+                    .cornerRadius(12)
+                    
+                    
+                    
+                    VStack(spacing: 12){
+                        
+                        Text("Тяжёлые")
+                            .fontWeight(.bold)
+                        
+                        Text("5,555")
+                            .fontWeight(.bold)
+                        
+                    }
+                    .padding(.vertical)
+                    .frame(width: (UIScreen.main.bounds.width / 3) - 30)
+                    .background(Color(.systemPurple))
+                    .cornerRadius(12)
+                }
+                .foregroundColor(.white)
+                .padding(.top, 10)
                 
             }
             .padding(.horizontal)
