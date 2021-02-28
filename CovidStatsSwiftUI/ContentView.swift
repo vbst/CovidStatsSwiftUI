@@ -25,16 +25,19 @@ struct Home: View {
     
     @State var index = 0
     @State var main : MainData!
+    @State var daily : [Daily] = []
+    @State var last : Int = 0
     
     var body: some View {
         
         VStack{
             
-            if self.main != nil{
+            if self.main != nil && !self.daily.isEmpty{
                 
                 VStack {
                     VStack(spacing: 18) {
                         
+                        //Заголовок
                         HStack {
                             
                             Text("Статистика COVID-19")
@@ -55,13 +58,14 @@ struct Home: View {
                         }
                         .padding(.top, (UIApplication.shared.windows.first?.safeAreaInsets.top)! + 15)
 
-                        
+                        //Переключатель Страна/Мир
                         HStack {
                             
                             Button {
                                 
                                 self.index = 0
                                 self.main = nil
+                                self.daily.removeAll()
                                 self.getData()
                                 
                             } label: {
@@ -77,6 +81,7 @@ struct Home: View {
                                 
                                 self.index = 1
                                 self.main = nil
+                                self.daily.removeAll()
                                 self.getData()
                                 
                             } label: {
@@ -93,6 +98,7 @@ struct Home: View {
                         .clipShape(Capsule())
                         .padding(.top, 10)
                         
+                        //Блок из двух VStack: Случаев/Смертей
                         HStack(spacing: 15){
                             
                             VStack(spacing: 12){
@@ -131,6 +137,8 @@ struct Home: View {
                         .foregroundColor(.white)
                         .padding(.top, 10)
                         
+                        
+                        //Блок из трёх VStack: Здоровы/Болеют/Тяжёлые
                         HStack(spacing: 15){
                             
                             VStack(spacing: 12){
@@ -188,12 +196,12 @@ struct Home: View {
                     .background(Color(.systemIndigo))
                     
                     
-            
+                    //Блок с данными за последние 7 дней
                     VStack(spacing: 15) {
                         
                         HStack {
                             
-                            Text("Последняя неделя")
+                            Text("Случаев за последние 7 дней")
                                 .font(.title)
                                 .foregroundColor(.black)
                             
@@ -205,11 +213,12 @@ struct Home: View {
                         
                         HStack {
                             
-                            ForEach(0...6, id: \.self){_ in
+                            ForEach(self.daily){i in
                                 
                                 VStack(spacing: 10) {
                                     
-                                    Text("555K")
+                                    Text("\(i.cases / 1000)т")
+                                        .lineLimit(1)
                                         .font(.caption)
                                         .foregroundColor(.gray)
                                     
@@ -221,12 +230,13 @@ struct Home: View {
                                             
                                             Rectangle()
                                                 .fill(Color(.systemPink))
-                                                .frame(width: 15)
+                                                .frame(width: 15, height: self.getHeight(value: i.cases, height: g.frame(in: .global).height))
                                         }
                                     }
                                     .offset(x: 20)
                                     
-                                    Text("28/2/21")
+                                    Text(i.day)
+                                        .lineLimit(1)
                                         .font(.caption)
                                         .foregroundColor(.gray)
                                 }
@@ -252,8 +262,10 @@ struct Home: View {
         }
     }
     
+    
     func getData(){
         
+        //данные для шапки
         var url = ""
         
         if self.index == 0 {
@@ -281,12 +293,85 @@ struct Home: View {
         }
         .resume()
         
+            
         
+        //данные для подвала
+        var url1 = ""
         
+        if self.index == 0{
+            
+            url1 = "https://corona.lmao.ninja/v2/historical/russia?lastdays=7"
+        }
+        else{
+            
+            url1 = "https://corona.lmao.ninja/v2/historical/all?lastdays=7"
+        }
+        
+        let session1 = URLSession(configuration: .default)
+        
+        session1.dataTask(with: URL(string: url1)!) { (data, _, err) in
+            
+            if err != nil{
+                
+                print((err?.localizedDescription)!)
+                return
+            }
+            
+            var count = 0
+            var cases : [String : Int] = [:]
+            
+            if self.index == 0{
+                
+                let json = try! JSONDecoder().decode(MyCountry.self, from: data!)
+                cases = json.timeline["cases"]!
+            }
+            else{
+                
+                let json = try! JSONDecoder().decode(Global.self, from: data!)
+                cases = json.cases
+            }
+            
+            for i in cases{
+                
+                self.daily.append(Daily(id: count, day: i.key, cases: i.value))
+                count += 1
+            }
+            
+            self.daily.sort { (t, t1) -> Bool in
+                
+                if t.day < t1.day{
+                    
+                    return true
+                }
+                else{
+                    
+                    return false
+                }
+            }
+            
+            self.last = self.daily.last!.cases
+        }
+        .resume()
     }
+
+    func getHeight(value : Int,height:CGFloat)->CGFloat{
+         
+        if self.last != 0{
+            
+            let converted = CGFloat(value) / CGFloat(self.last)
+            
+            return converted * height
+        }
+        else{
+            
+            return 0
+        }
+    }
+
 }
 
 
+//модели данных для парсинга JSON
 struct Daily: Identifiable{
     
     var id : Int
@@ -312,6 +397,7 @@ struct Global : Decodable {
     
     var cases : [String : Int]
 }
+
 
 struct Indicator : UIViewRepresentable {
     
